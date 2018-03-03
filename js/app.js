@@ -57,4 +57,44 @@
   };
 
   // ADD YOUR CODE HERE
+  // Listen for submissions on the search form. Prevent Default $action
+  // Validate the user input is not blank
+function getMovies(string) {
+  fetch(`https://omdb-api.now.sh/?s=${string}`) // template literal
+    .then(function(res) {
+      return res.json();
+    })
+    .then(function(data) {
+      for(let movie of data.Search) {
+        movies.push(movie);
+      }
+    })
+    .then(function() {
+      console.log(movies);
+      setTimeout(() => {
+          renderMovies(); // defined above
+      }, 200);
+    });
+}
+
+
+
+  //Send an HTTP Request to OMDB API search endpoint
+  // API requires key. send requests to https://omdb-api.nowsh/
+  // example: https://omdb-api.now.sh/?s%20wars
+  fetch('http://www.omdb-api.nowsh/')
+    .then((data) => console.log(data));
+
+
+  // handle http response by pushing a new, well-formed movie object
+  // into the global movies array.
+  // render movies array to page by calling the renderMovies() func
+  // with no arguments.
+
+
+
+
+
+
+
 })();
