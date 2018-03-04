@@ -56,45 +56,53 @@
     }
   };
 
-  // ADD YOUR CODE HERE
+  function getPlot(imdbID) {
+		return fetch(`https://omdb-api.now.sh/?i=${imdbID}`)
+  			.then((res) => response.json())
+        .then((data) => {
+          let result = data.Plot;
+          return result;
+        });
+	}
+
+  // ADD YOUR CODE HERE NK
   // Listen for submissions on the search form. Prevent Default $action
-  // Validate the user input is not blank
-function getMovies(string) {
-  fetch(`https://omdb-api.now.sh/?s=${string}`) // template literal
-    .then(function(res) {
-      return res.json();
-    })
-    .then(function(data) {
-      for(let movie of data.Search) {
-        movies.push(movie);
-      }
-    })
-    .then(function() {
-      console.log(movies);
-      setTimeout(() => {
-          renderMovies(); // defined above
-      }, 200);
+  function getMovies(string) {
+    fetch(`https://omdb-api.now.sh/?s=${string}`) // template literal
+        .then(function(res) {
+            return res.json();
+        })
+
+        .then(function(data) {
+            for(let movie of data.Search) {
+              movies.push(movie);
+          }
+        })
+
+        .then(function() {
+            for(let movie of movies) { // try different for loop?
+              getPlot(movie.imdbID).then(result => {
+                  movie.Plot = result;
+              });
+            }
+        })
+
+        .then(function() {
+      				console.log(movies);
+      				setTimeout(() => {
+      					renderMovies();
+      				}, 200);
+      			});
+    }
+
+    let searchButton = document.getElementById('searchButton');
+    let searchField = document.getElementById('search');
+
+    searchButton.addEventListener('click', ev => {
+          ev.preventDefault(); // if event does not get handled, default action should not be taken as it normally would.
+          if(searchField.value) { // if anything is in searchField, it'll eval to true
+              getMovies(searchField.value);
+              searchField.value = '';
+          }
     });
-}
-
-
-
-  //Send an HTTP Request to OMDB API search endpoint
-  // API requires key. send requests to https://omdb-api.nowsh/
-  // example: https://omdb-api.now.sh/?s%20wars
-  fetch('http://www.omdb-api.nowsh/')
-    .then((data) => console.log(data));
-
-
-  // handle http response by pushing a new, well-formed movie object
-  // into the global movies array.
-  // render movies array to page by calling the renderMovies() func
-  // with no arguments.
-
-
-
-
-
-
-
 })();
